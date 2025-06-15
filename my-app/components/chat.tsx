@@ -1,26 +1,31 @@
 "use client"
 import { MathJax } from "better-react-mathjax";
 import { useEffect, useState } from "react";
-import "github-markdown-css"
+import ReactMarkdown from "react-markdown";
+
+interface response {
+    message: string
+}
 
 function Chat() {
     const [text, setText] = useState("");
-    const [fetched, setFetched] = useState('<p>hi</p>');
+    const [fetched, setFetched] = useState('');
     const [isreq, setIsReq] = useState(false);
     useEffect(() => {
         const foo = async () => {
             if (isreq) {
-                let res = await fetch(`http://127.0.0.1:8000/?message="${text}"`)
+                const res = await fetch(`http://127.0.0.1:8000/?message="${text}"`)
                 console.log(`http://127.0.0.1:8000/?message="${text}"`)
-                res = await res.json()
-                setFetched(res.message);
+                const result: response = await res.json()
+                setFetched(result.message);
+                console.log(result.message)
                 setIsReq(!isreq);
             }
         }
         foo()
     }, [setFetched, text, isreq]);
     return (
-        <div className="markdown-body">
+        <div>
             <input
                 type="text"
                 value={text}
@@ -30,7 +35,10 @@ function Chat() {
             />
             <button onClick={() => { setIsReq(!isreq) }}>submit</button>
             <MathJax inline dynamic>
-                <div dangerouslySetInnerHTML={{ __html: fetched }}></div>
+                <br />
+                <ReactMarkdown>
+                    {fetched}
+                </ReactMarkdown>
             </MathJax>
         </div>
     );

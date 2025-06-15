@@ -1,5 +1,6 @@
 import { MathJaxContext } from "better-react-mathjax";
 import type { Metadata } from "next";
+import "github-markdown-css"
 
 export const metadata: Metadata = {
   title: "Create Next App",
@@ -21,9 +22,11 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body>
+      <body style={{ margin: 0, width: "100vw", height: "100vh" }}>
         <MathJaxContext config={mathJaxConfig}>
-          {children}
+          <div className="markdown-body">
+            {children}
+          </div>
         </MathJaxContext>
       </body>
     </html >

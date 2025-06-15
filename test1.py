@@ -7,6 +7,8 @@ from langchain_ollama import ChatOllama
 from langchain_core.tools import tool
 from markdown import markdown
 from fastapi.middleware.cors import CORSMiddleware
+from typing import Dict,List
+
 @tool
 def solve_expression(expression:str)->str:
     '''return a value after evalutating a python expression using the "eval()" function'''
@@ -40,7 +42,13 @@ app.add_middleware(
 @app.get("/")
 def root(message:str):
     print(message)
-    reply=agent.invoke({"messages": [SystemMessage(content="reply in markdown that can be converted into html"),
+    reply:Dict[str,List] =agent.invoke({"messages": [SystemMessage(content="reply in markdown that can be converted into html"),
                                      HumanMessage(content=message)]})
-    print(reply.get("messages")[-1].content)
-    return {"message":markdown(reply.get("messages")[-1].content)}
+    
+    messages = reply.get("messages")
+
+    if not messages:
+        return {"message": "No response from agent."}
+    
+    print(messages)
+    return {"message":str(messages[-1].content)}
