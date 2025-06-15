@@ -1,6 +1,6 @@
 from fastapi import FastAPI
 from datetime import datetime
-from langchain_core.messages import HumanMessage
+from langchain_core.messages import HumanMessage,SystemMessage
 from langgraph.checkpoint.memory import MemorySaver
 from langgraph.prebuilt import create_react_agent
 from langchain_ollama import ChatOllama
@@ -19,7 +19,7 @@ def get_date():
 @tool
 def get_info()->list[str]:
     '''return todays news'''
-    return ["Over 80 Killed In Iran, Israel As Missiles Pound Middle East: 10 Points",
+    return ["Over 80 Killed In Iran, Israel As Missiles Pound Middle East",
             "PM Modi on key 3-nation tour: Cyprus, Canada, Croatia on itinerary; what's on his agenda?",
             "7 killed in helicopter crash in Uttarakhand, chopper services shut"]
 
@@ -39,6 +39,8 @@ app.add_middleware(
 
 @app.get("/")
 def root(message:str):
-    reply=agent.invoke({"messages": [HumanMessage(content=message)]})
-    print(reply.get("messages")[1].content+" "+reply.get("messages")[-1].content)
+    print(message)
+    reply=agent.invoke({"messages": [SystemMessage(content="reply in markdown that can be converted into html"),
+                                     HumanMessage(content=message)]})
+    print(reply.get("messages")[-1].content)
     return {"message":markdown(reply.get("messages")[-1].content)}
