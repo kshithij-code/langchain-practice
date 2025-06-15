@@ -20,7 +20,7 @@ def get_date():
 
 @tool
 def get_info()->list[str]:
-    '''return todays news'''
+    '''return today's news'''
     return ["Over 80 Killed In Iran, Israel As Missiles Pound Middle East",
             "PM Modi on key 3-nation tour: Cyprus, Canada, Croatia on itinerary; what's on his agenda?",
             "7 killed in helicopter crash in Uttarakhand, chopper services shut"]
@@ -43,12 +43,13 @@ app.add_middleware(
 def root(message:str):
     print(message)
     reply:Dict[str,List] =agent.invoke({"messages": [SystemMessage(content="reply in markdown that can be converted into html"),
-                                     HumanMessage(content=message)]})
+                                     HumanMessage(content=message)]},
+                                       config={"recursion_limit":100})
     
     messages = reply.get("messages")
 
     if not messages:
         return {"message": "No response from agent."}
     
-    print(messages)
+    print(messages[-1].content)
     return {"message":str(messages[-1].content)}
