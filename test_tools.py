@@ -9,11 +9,40 @@ def create_file(name:str,path:str,content:str)->str:
         return str(e)
     return "done"
 
-def create_dir(name,path)->str:
+def create_dir(name:str,path:str)->str:
     try:
         os.mkdir(path+"/"+name)
     except Exception as e:
         return str(e)
+    return "done"
+
+def edit_file(path:str,start_no:int,end_no:int,content:str)->str:
+    temp=open(path,"r").read().split("\n")
+    pprint(open(path,"r").read())
+    print(temp[:start_no],temp[end_no+1:len(temp)-1])
+    if len(temp)<start_no:
+        print(len(temp))
+        open(path,"a").write(content+"\n")
+    else:
+        print(temp)
+        temp=temp[:start_no]+[content]+temp[end_no+1:len(temp)-1]
+        print(temp)
+        open(path,"w").writelines(list(map(lambda x:x+"\n",temp)))
+    pprint(open(path,"r").read())
+    return "done"
+
+def insert_to_file(path:str,index:int,content:str)->str:
+    temp=open(path,"r").read().split("\n")
+    pprint(open(path,"r").read())
+    if len(temp)<index:
+        print(len(temp))
+        open(path,"a").write(content+"\n")
+    else:
+        print(temp)
+        temp=temp[:index]+[content]+temp[index:len(temp)-1]
+        print(temp)
+        open(path,"w").writelines(list(map(lambda x:x+"\n",temp)))
+    pprint(open(path,"r").read())
     return "done"
 
 def files_tool(path):
@@ -42,4 +71,5 @@ def files_tool(path):
 if __name__=="__main__":
     from pprint import pprint
     
-    pprint(create_dir(".venv","."))
+    # pprint(create_dir(".venv","."))
+    pprint(edit_file("test.txt",2,3,"lsc1\nasl2"))
