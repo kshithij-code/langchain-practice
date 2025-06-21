@@ -12,6 +12,7 @@ from langchain_tavily import TavilySearch
 import getpass
 import os
 from dotenv import load_dotenv
+from test_tools import *
 
 load_dotenv(".env")
 
@@ -40,10 +41,12 @@ tavily_search_tool = TavilySearch(
     max_results=5,
     topic="general",
 )
-tools = [solve_expression,get_date,get_info]
+tools = [create_file]
+
 agent = create_react_agent(model, tools)
 
 if __name__=="__main__":
         reply:Dict[str,List]=agent.invoke({"messages": [HumanMessage(content=input("message:"))]},
-                                     config={"recursion_limit":100})
-        print(reply["messages"][-1].content)
+                                     config={"recursion_limit":50})
+        for mes in reply["messages"]:
+            print(mes.content)
